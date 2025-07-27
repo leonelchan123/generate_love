@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Love Meter - Medidor de Amor</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: Arial, sans-serif;
+        }
+
+        .love-card {
+            width: 480px;
+            height: 270px;
+            background: radial-gradient(circle at center, #ff69b4, #ff1493);
+            border-radius: 0px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: none;
+            border: none;
+        }
+
+        .polka-dots {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.7) 2px, transparent 2px);
+            background-size: 20px 20px;     
+        }
+
+        .profile-circle {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            background: white;
+            border-radius: 15px;
+            border: 6px solid #fff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .left-profile {
+            top: 30px;
+            left: 30px;
+        }
+
+        .right-profile {
+            top: 30px;
+            right: 30px;
+        }
+
+        .profile-text {
+            position: absolute;
+            font-size: 14px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            text-align: center;
+            width: 120px;
+            font-family: Arial, sans-serif;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .left-text {
+            top: 220px;
+            left: 30px;
+        }
+
+        .right-text {
+            top: 220px;
+            right: 30px;
+        }
+
+        .heart-container {
+            position: absolute;
+            top: 55%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 35px;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .percentage {
+            position: absolute;
+            top: 35%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 34px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            font-family: 'Arial Black', Arial, sans-serif;
+        }
+
+        .percentage-message {
+            position: absolute;
+            bottom: 60px;
+            left: 20px;
+            right: 20px;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            text-align: center;
+            font-family: Arial, sans-serif;
+            word-wrap: break-word;
+        }
+
+        .custom-text {
+            position: absolute;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.4);
+            text-align: center;
+            font-family: Arial, sans-serif;
+            max-width: 85%;
+            word-wrap: break-word;
+            line-height: 1.1;
+        }
+
+        .decorative-hearts {
+            position: absolute;
+            color: rgba(255,255,255,0.6);
+            font-size: 20px;
+        }
+
+        .heart1 {
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .heart2 {
+            bottom: 40px;
+            left: 30px;
+        }
+
+        .heart3 {
+            bottom: 40px;
+            right: 30px;
+        }
+
+        .heart4 {
+            top: 50%;
+            left: 20px;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+
+        .heart5 {
+            top: 50%;
+            right: 20px;
+            transform: translateY(-50%);
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <div class="love-card">
+        <div class="polka-dots"></div>
+        
+        <!-- Mensaje personalizado según el porcentaje -->
+        <div class="percentage-message" id="percentageMessage">💕 CALCULANDO...</div>
+        
+        <!-- Porcentaje arriba del corazón -->
+        <div class="percentage" id="percentage">0%</div>
+        
+        <!-- Círculos blancos para las fotos de perfil -->
+        <div class="profile-circle left-profile" id="leftProfile"></div>
+        <div class="profile-circle right-profile" id="rightProfile"></div>
+        
+        <!-- Textos de los perfiles -->
+        <div class="profile-text left-text" id="leftText">Usuario 1</div>
+        <div class="profile-text right-text" id="rightText">Usuario 2</div>
+        
+        <!-- Corazón central -->
+        <div class="heart-container">💖</div>
+        
+        <!-- Texto personalizable abajo (autor) -->
+        <div class="custom-text" id="authorText">LeoBot</div>
+        
+        <!-- Corazones decorativos -->
+        <div class="decorative-hearts heart1">💕</div>
+        <div class="decorative-hearts heart2">💝</div>
+        <div class="decorative-hearts heart3">💕</div>
+        <div class="decorative-hearts heart4">💖</div>
+        <div class="decorative-hearts heart5">💖</div>
+    </div>
+
+    <script>
+        // Función para obtener el mensaje según el porcentaje
+        function getPercentageMessage(percentage) {
+            if (percentage >= 90) return "💖 ¡AMOR ETERNO!";
+            if (percentage >= 80) return "💕 ¡SÚPER COMPATIBLES!";
+            if (percentage >= 70) return "💘 ¡MUY BUENA CONEXIÓN!";
+            if (percentage >= 60) return "💓 BUENA COMPATIBILIDAD";
+            if (percentage >= 50) return "💟 COMPATIBILIDAD PROMEDIO";
+            if (percentage >= 40) return "💔 MEJOR COMO AMIGOS";
+            if (percentage >= 30) return "😅 SOLO AMIGOS";
+            if (percentage >= 20) return "😬 MEJOR COMO CONOCIDOS";
+            if (percentage >= 10) return "😐 POCA CONEXIÓN";
+            return "😂 ¡CERO QUÍMICA!";
+        }
+
+        // Función para truncar nombres largos
+        function truncateName(name, maxLength = 12) {
+            if (name.length <= maxLength) return name;
+            return name.substring(0, maxLength - 3) + '...';
+        }
+
+        // Función para actualizar la imagen con datos dinámicos
+        function updateLoveMeter(data) {
+            console.log('🎨 Actualizando Love Meter con datos:', data);
+            
+            // Actualizar porcentaje
+            document.getElementById('percentage').textContent = data.percentage + '%';
+            
+            // Actualizar mensaje según porcentaje
+            document.getElementById('percentageMessage').textContent = getPercentageMessage(data.percentage);
+            
+            // Actualizar nombres (truncados si son muy largos)
+            document.getElementById('leftText').textContent = truncateName(data.senderName);
+            document.getElementById('rightText').textContent = truncateName(data.targetName);
+            
+            // Actualizar imágenes de perfil con fallback mejorado
+            const leftProfile = document.getElementById('leftProfile');
+            const rightProfile = document.getElementById('rightProfile');
+            
+            // Imagen izquierda (sender)
+            if (data.senderImage && data.senderImage !== 'null') {
+                console.log('📸 Cargando imagen sender:', data.senderImage);
+                leftProfile.style.backgroundImage = `url('${data.senderImage}')`;
+                leftProfile.style.backgroundSize = 'cover';
+                leftProfile.style.backgroundPosition = 'center';
+                leftProfile.style.backgroundRepeat = 'no-repeat';
+                leftProfile.style.backgroundColor = 'white';
+                leftProfile.innerHTML = '';
+            } else {
+                console.log('👤 Usando imagen por defecto para sender');
+                // Fallback para imagen por defecto
+                leftProfile.style.backgroundImage = 'url("./profile_icon.png")';
+                leftProfile.style.backgroundSize = 'cover';
+                leftProfile.style.backgroundPosition = 'center';
+                leftProfile.style.backgroundRepeat = 'no-repeat';
+                leftProfile.style.backgroundColor = '#e0e0e0';
+                leftProfile.innerHTML = '';
+            }
+            
+            // Imagen derecha (target)
+            if (data.targetImage && data.targetImage !== 'null') {
+                console.log('📸 Cargando imagen target:', data.targetImage);
+                rightProfile.style.backgroundImage = `url('${data.targetImage}')`;
+                rightProfile.style.backgroundSize = 'cover';
+                rightProfile.style.backgroundPosition = 'center';
+                rightProfile.style.backgroundRepeat = 'no-repeat';
+                rightProfile.style.backgroundColor = 'white';
+                rightProfile.innerHTML = '';
+            } else {
+                console.log('👤 Usando imagen por defecto para target');
+                // Fallback para imagen por defecto
+                rightProfile.style.backgroundImage = 'url("./profile_icon.png")';
+                rightProfile.style.backgroundSize = 'cover';
+                rightProfile.style.backgroundPosition = 'center';
+                rightProfile.style.backgroundRepeat = 'no-repeat';
+                rightProfile.style.backgroundColor = '#e0e0e0';
+                rightProfile.innerHTML = '';
+            }
+            
+            // Actualizar autor
+            if (data.author) {
+                document.getElementById('authorText').textContent = data.author;
+            }
+            
+            console.log('✅ Love Meter actualizado correctamente');
+        }
+
+        // Función para generar porcentaje determinístico
+        function generateLovePercentage(sender, target) {
+            const combined = sender + target;
+            let hash = 0;
+            for (let i = 0; i < combined.length; i++) {
+                const char = combined.charCodeAt(i);
+                hash = ((hash << 5) - hash) + char;
+                hash = hash & hash; // Convert to 32bit integer
+            }
+            return Math.abs(hash) % 101; // 0-100
+        }
+
+        // Ejemplo de uso (esto se llamaría desde el bot)
+        function initializeLoveMeter(senderNumber, targetNumber, senderName, targetName, senderImage, targetImage, author) {
+            const percentage = generateLovePercentage(senderNumber, targetNumber);
+            
+            const data = {
+                percentage: percentage,
+                senderName: senderName || senderNumber,
+                targetName: targetName || targetNumber,
+                senderImage: senderImage,
+                targetImage: targetImage,
+                author: author || 'LeoBot'
+            };
+            
+            updateLoveMeter(data);
+            return data;
+        }
+
+        // Para testing en desarrollo
+        // initializeLoveMeter('123456789', '987654321', 'Juan Pérez', 'María García', null, null, 'LeoBot');
+    </script>
+</body>
+</html>

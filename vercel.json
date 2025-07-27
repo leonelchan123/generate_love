@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "functions": {
+    "api/generate.js": {
+      "maxDuration": 30,
+      "memory": 1024
+    }
+  },
+  "env": {
+    "VERCEL": "1"
+  },
+  "build": {
+    "env": {
+      "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+    }
+  }
+}
