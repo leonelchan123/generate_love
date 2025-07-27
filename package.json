@@ -1,0 +1,22 @@
+{
+  "name": "generate-love",
+  "version": "1.0.0",
+  "description": "API para generar imágenes de medidor de amor",
+  "main": "api/generate.js",
+  "scripts": {
+    "start": "node api/generate.js",
+    "dev": "node api/generate.js"
+  },
+  "dependencies": {
+    "puppeteer-core": "10.4.0",
+    "chrome-aws-lambda": "10.1.0"
+  },
+  "devDependencies": {
+    "puppeteer": "^10.4.0"
+  },
+  "engines": {
+    "node": "22.x"
+  },
+  "author": "LeoBot",
+  "license": "MIT"
+}
